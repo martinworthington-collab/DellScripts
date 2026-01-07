@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>CFBundleName</key><string>Log jigsum ANS files Modern</string>
+  <key>CFBundleDisplayName</key><string>Log jigsum ANS files Modern</string>
+  <key>CFBundleIdentifier</key><string>com.codex.log-jigsum-ans-modern</string>
+  <key>CFBundleVersion</key><string>1.0</string>
+  <key>CFBundleShortVersionString</key><string>1.0</string>
+  <key>CFBundlePackageType</key><string>APPL</string>
+  <key>CFBundleExecutable</key><string>droplet</string>
+  <key>LSMinimumSystemVersion</key><string>13.0</string>
+  <key>LSRequiresNativeExecution</key><true/>
+  <key>CFBundleIconFile</key><string>droplet</string>
+  <key>CFBundleDocumentTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleTypeName</key><string>Any File or Folder</string>
+      <key>CFBundleTypeRole</key><string>Viewer</string>
+      <key>CFBundleTypeExtensions</key><array><string>*</string></array>
+      <key>LSItemContentTypes</key>
+      <array>
+        <string>public.item</string>
+        <string>public.data</string>
+        <string>public.folder</string>
+      </array>
+    </dict>
+  </array>
+</dict>
+</plist>
