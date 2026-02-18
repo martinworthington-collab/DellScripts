@@ -127,10 +127,19 @@ on processEPS(theFile, outFolder)
 	tell application "Adobe Illustrator"
 		activate
 		set prevInteraction to user interaction level
-		set user interaction level to never interact
-		open (theFile as alias) without dialogs
-		set theDoc to current document
 		set isAlphagramMode to my isAlphagramFile(theFile)
+		
+		if isAlphagramMode then
+			set user interaction level to interact with all
+			open (theFile as alias)
+			my acceptLegacyTextOpenPrompt()
+			set user interaction level to never interact
+		else
+			set user interaction level to never interact
+			open (theFile as alias) without dialogs
+		end if
+		
+		set theDoc to current document
 		
 		my unlockAllLayers(theDoc)
 		
@@ -165,6 +174,36 @@ on isAlphagramFile(theFile)
 	if fileNameText contains "alphagram" then return true
 	return false
 end isAlphagramFile
+
+on acceptLegacyTextOpenPrompt()
+	tell application "Adobe Illustrator" to activate
+	try
+		tell application "System Events"
+			set frontmost of process "Adobe Illustrator" to true
+		end tell
+	end try
+	
+	repeat with _i from 1 to 30
+		try
+			tell application "System Events"
+				tell process "Adobe Illustrator"
+					if exists window 1 then
+						tell window 1
+							if exists button "Update" then
+								click button "Update"
+								exit repeat
+							else if exists button "Update All Legacy Text" then
+								click button "Update All Legacy Text"
+								exit repeat
+							end if
+						end tell
+					end if
+				end tell
+			end tell
+		end try
+		delay 0.1
+	end repeat
+end acceptLegacyTextOpenPrompt
 
 on updateAllLegacyTextViaMenu()
 	tell application "Adobe Illustrator" to activate
