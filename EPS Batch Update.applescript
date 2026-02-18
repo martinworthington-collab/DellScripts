@@ -130,17 +130,25 @@ on processEPS(theFile, outFolder)
 		set user interaction level to never interact
 		open (theFile as alias) without dialogs
 		set theDoc to current document
+		set isAlphagramMode to my isAlphagramFile(theFile)
 		
 		my unlockAllLayers(theDoc)
 		
-		-- Stray points
-		my removeStrayPoints()
+		-- For Alphagram files, update legacy text via menu first to expose missing-font replacements.
+		if isAlphagramMode then
+			my updateAllLegacyTextViaMenu()
+		end if
 		
 		-- Font mapping
 		my replaceFontsInDocument(theDoc)
 		
-		-- Legacy text refresh (best effort)
-		my refreshLegacyText(theDoc)
+		-- Legacy text refresh (best effort) for non-Alphagram files
+		if not isAlphagramMode then
+			my refreshLegacyText(theDoc)
+		end if
+		
+		-- Stray points
+		my removeStrayPoints()
 		
 		-- Color conversion
 		my convertToCmykAndGrayscale()
@@ -151,6 +159,40 @@ on processEPS(theFile, outFolder)
 		set user interaction level to prevInteraction
 	end tell
 end processEPS
+
+on isAlphagramFile(theFile)
+	set fileNameText to (name of theFile) as text
+	if fileNameText contains "alphagram" then return true
+	return false
+end isAlphagramFile
+
+on updateAllLegacyTextViaMenu()
+	tell application "Adobe Illustrator" to activate
+	try
+		tell application "System Events"
+			set frontmost of process "Adobe Illustrator" to true
+		end tell
+	end try
+	delay 0.2
+	
+	tell application "System Events"
+		tell process "Adobe Illustrator"
+			try
+				tell menu bar 1
+					tell menu bar item "Type"
+						tell menu "Type"
+							tell menu item "Legacy Text"
+								tell menu "Legacy Text"
+									click menu item "Update All Legacy Text"
+								end tell
+							end tell
+						end tell
+					end tell
+				end tell
+			end try
+		end tell
+	end tell
+end updateAllLegacyTextViaMenu
 
 on unlockAllLayers(theDoc)
 	try
